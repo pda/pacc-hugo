@@ -1,0 +1,11 @@
+{{ define "main" }}
+<h1>Paul Annesley</h1>
+<div id="index">
+  {{ range (.Data.Pages).GroupByDate "2006" }}
+    <h2>{{ .Key }}</h2>
+    {{ range .Pages -}}
+    <div id="index-item"><a href="{{ .Permalink }}">{{ .Title }}</a>{{ if .Draft }} (draft){{ end }}</div>
+    {{ end -}}
+  {{ end }}
+</div>
+{{ end }}

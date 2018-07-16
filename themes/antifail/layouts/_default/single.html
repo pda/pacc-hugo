@@ -1,0 +1,8 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<h2>— Paul Annesley, {{ .Date.Format "January 2006" }}</h2>
+{{ .Content }}
+<div>
+  <a href="/">← index</a>
+</div>
+{{ end }}
