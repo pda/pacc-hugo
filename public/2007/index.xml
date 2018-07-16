@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2007s on paul.annesley.cc</title>
+    <link>http://paul.annesley.cc/2007/</link>
+    <description>Recent content in 2007s on paul.annesley.cc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 19 Nov 2007 13:05:46 +1100</lastBuildDate>
+    
+	<atom:link href="http://paul.annesley.cc/2007/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Django and Python Imaging Library (PIL) on Leopard</title>
+      <link>http://paul.annesley.cc/2007/11/django-and-python-imaging-library-pil-on-leopard/</link>
+      <pubDate>Mon, 19 Nov 2007 13:05:46 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/11/django-and-python-imaging-library-pil-on-leopard/</guid>
+      <description>Chapter 5 of the excellent Django Book makes use of django.db.models.URLField().
+When running under the default Python 2.5 environment shipped with Mac OS 10.5 Leopard, this causes an error something along these lines:
+$ ./manage.py validate Error: One or more models did not validate: books.author: &amp;#34;headshot&amp;#34;: To use ImageFields, you need to install the Python Imaging Library. Get it at http://www.pythonware.com/products/pil/ . Assuming you&amp;rsquo;ve installed XCode (go on, you know you want to.</description>
+    </item>
+    
+    <item>
+      <title>Great Webate - Tables Have No Place In Web Page Layout</title>
+      <link>http://paul.annesley.cc/2007/08/great-webate-tables-have-no-place-in-web-page-layout/</link>
+      <pubDate>Sat, 25 Aug 2007 05:35:15 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/08/great-webate-tables-have-no-place-in-web-page-layout/</guid>
+      <description>As promised, I&#39;m finally posting my notes from my second debate in the Melbourne Web Standards Group&#39;s first ever Great Webate.
+The proposition was that Tables Still Have A Place In Web Page Layout, and it was up to James Edwards and I to convince the crowd that such a statement just wasn&#39;t going to fly in the 21st century. Our unfortunate opponents were Kevin Yank and Andrew Krespanis, and I must say they made a brave albeit sometimes desperate attempt, given the proposition and the audience.</description>
+    </item>
+    
+    <item>
+      <title>Great Webate - Ajax Not The Future Of The Web</title>
+      <link>http://paul.annesley.cc/2007/08/great-webate-ajax-not-the-future-of-the-web/</link>
+      <pubDate>Fri, 03 Aug 2007 14:40:19 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/08/great-webate-ajax-not-the-future-of-the-web/</guid>
+      <description>Last night was the Melbourne Web Standards Group&#39;s first ever Great Webate. I teamed up with Kevin Yank to argue against the proposition That Ajax Is The Future Of The Web, with James Edwards and Andrew Krespanis arguing the affirmative. As the first negative speaker, my argument went something like this...
+I&#39;m sorry to be the one to break it to you all, but Ajax is not the future of the web.</description>
+    </item>
+    
+    <item>
+      <title>Xdebug 2.0.0 Released</title>
+      <link>http://paul.annesley.cc/2007/07/xdebug-200-released/</link>
+      <pubDate>Wed, 25 Jul 2007 14:55:19 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/07/xdebug-200-released/</guid>
+      <description>This one nearly slipped past me, what with the lack of any RSS/Atom feeds on http://xdebug.org/, so I figured I should put it in one.
+Xdebug 2.0.0 final has been released.
+After almost four years of work, Xdebug 2 is finally ready. With improved functionality and many new features it is ready to totally change the way you develop in PHP. Some of the new features and updates include improved stack traces, execution traces to files, code coverage analysis and much improved remote debugging support.</description>
+    </item>
+    
+    <item>
+      <title>PHP 5.2.1 bug breaks SimpleTest</title>
+      <link>http://paul.annesley.cc/2007/06/php-521-bug-breaks-simpletest/</link>
+      <pubDate>Fri, 01 Jun 2007 12:28:10 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/06/php-521-bug-breaks-simpletest/</guid>
+      <description>The SimpleTest unit testing and mock object framework for PHP by Marcus Baker at The Last Craft is broken in PHP 5.2.1 due to PHP bug 40768.
+The bug causes an infinite loop when &amp;lsquo;break&amp;rsquo; is called in a foreach loop within another foreach loop, when both are looping over variables that internally reference the same array.
+&amp;lt;?php $counter = 0; $a = $b = array(1,2,3); foreach ($a as $outer) { echo &amp;#34;$outer, &amp;#34;; if ($counter++ &amp;gt; 10) die(&amp;#34;.</description>
+    </item>
+    
+    <item>
+      <title>Ubuntu 7.04 Feisty Server &amp; Parallels - CDROM/Kernel Workaround</title>
+      <link>http://paul.annesley.cc/2007/05/ubuntu-704-feisty-server-parallels-cdromkernel-workaround/</link>
+      <pubDate>Tue, 01 May 2007 11:39:05 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/05/ubuntu-704-feisty-server-parallels-cdromkernel-workaround/</guid>
+      <description>Parallels and the Linux 2.6.20 kernel included with the latest Ubuntu release (7.04 - Feisty Fawn) do not get along well. Firstly, the installer fails to detect the CDROM drive emulated by Parallels. Then, if you manage to get Ubuntu installed using a workaround, the server kernel (vmlinuz-2.6.20-16-server) will not boot.
+Here&amp;rsquo;s a workaround that I&amp;rsquo;ve come up with to install Ubuntu 7.04 Feisty Fawn Server on Parallels (build 3188). I installed it from the server ISO (ubuntu-7.</description>
+    </item>
+    
+    <item>
+      <title>Ubuntu 7.04 Feisty Fawn on Parallels - CD-ROM Detect Error</title>
+      <link>http://paul.annesley.cc/2007/04/ubuntu-704-feisty-fawn-on-parallels-cd-rom-detect-error/</link>
+      <pubDate>Sat, 21 Apr 2007 06:45:56 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/04/ubuntu-704-feisty-fawn-on-parallels-cd-rom-detect-error/</guid>
+      <description>UPDATE: Solaris CDROM emulation does the trick for Desktop Ubuntu. For Ubuntu Server, read Ubuntu 7.04 Feisty Server &amp;amp; Parallels - CDROM/Kernel Workaround.
+If you&#39;re trying to install Ubuntu 7.04 Feisty Fawn on Parallels Desktop for Mac, and getting an error like &#34;No common CD-Rom drive was detected&#34;, this might save you some further googling.
+Apparently an issue introduced in some configurations of linux kernel 2.6.20 causes the Parallels emulated CD-ROM to not be detected.</description>
+    </item>
+    
+    <item>
+      <title>Lua climbs in TIOBE software index</title>
+      <link>http://paul.annesley.cc/2007/03/lua-climbs-in-tiobe-software-index/</link>
+      <pubDate>Wed, 07 Mar 2007 02:02:36 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2007/03/lua-climbs-in-tiobe-software-index/</guid>
+      <description>Lua, the lightweight language behind lighttpd&#39;s mod_magnet, has climbed from position 44 to position 25 in the TIOBE Programming Community Index. Maybe we&#39;ll see it in the top 20 soon...
+Lua is also a popular language for game scripting engines, perhaps most notably being used in World of Warcraft as an embedded scripting language for the UI subsystem.
+Those who get their kicks from network monitoring (such as myself) rather than online gaming may have come across Lua in Wireshark (formerly Ethereal).</description>
+    </item>
+    
+  </channel>
+</rss>

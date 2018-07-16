@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>Simple Dependency Injection and MiniTest::Mock</h1>
+<h2>— Paul Annesley, March 2012</h2>
+<p>I recently wrote a <a href="https://github.com/flippa/ralexa">Ruby client for Amazon Alexa&rsquo;s APIs</a>, and thought I&rsquo;d<br />
+pull out an example of nice, simple dependency injection to facilitate unit<br />
+testing. Nothing revolutionary or complicated, just good practice.</p>
+
+<p>The example is based around a <code>UriSigner</code> class, normally used by the calling<br />
+code like this:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">UriSigner</span><span style="color:#f92672">.</span>new(<span style="color:#f92672">*</span>credentials)<span style="color:#f92672">.</span>sign_uri(uri)</code></pre></div>
+
+<p>The calling code doesn&rsquo;t know or care that <code>UriSigner</code> depends on <a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/base64/rdoc/Base64.html">Base64</a>,<br />
+<a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/openssl/rdoc/OpenSSL/Digest.html">OpenSSL::Digest::SHA256</a> and <a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/openssl/rdoc/OpenSSL/HMAC.html">OpenSSL::HMAC</a>. The unit test for<br />
+<code>UriSigner</code>, however, cares for two reasons.</p>
+
+<p>Firstly, they&rsquo;re external dependencies, and only need to be tested for correct<br />
+usage, not correct implementation.</p>
+
+<p>Secondly, these dependencies represent an encoder and a cryptographic hash<br />
+function; they&rsquo;re deterministic, but they return very opaque data which can<br />
+make tests and their failure messages difficult to understand.</p>
+
+<p>So instead of testing against magical (computed in advance) Base64 strings and<br />
+HMAC hashes, I&rsquo;ve used simple <code>attr_writer</code> dependency injectors:</p>
+
+<script src="//gist.github.com/pda/2224862.js?file=uri_signer.rb"></script>
+
+<p>The unit test can then inject <a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/minitest/mock/rdoc/MiniTest/Mock.html">MiniTest::Mock</a> instances in place of the<br />
+real Base64 and HMAC implementations, setting expected method calls and their<br />
+return values:</p>
+
+<script src="//gist.github.com/pda/2224862.js?file=uri_signer_spec.rb"></script>
+
+<p>As simple as that.</p>
+
+<p>The same approach is used by the HTTP Client class to stub out actual HTTP<br />
+calls via Net::HTTP. There&rsquo;s great libraries like <a href="https://github.com/myronmarston/vcr">VCR</a>, <a href="https://github.com/bblimke/webmock">WebMock</a> and<br />
+<a href="https://github.com/chrisk/fakeweb">FakeWeb</a> for handling this, but sometimes it&rsquo;s easier to keep it lo-fi:</p>
+
+<p><script src="//gist.github.com/pda/2224862.js?file=client.rb"></script><br />
+<script src="//gist.github.com/pda/2224862.js?file=client_spec.rb"></script></p>
+
+<p>This kind of dependency injection is one of many basic techniques which aren&rsquo;t<br />
+fancy enough to get a lot of press, but go a long way to keeping your objects<br />
+and tests in order.</p>
+
+<p>Got any thoughts? Hit me up, I&rsquo;m <a href="https://twitter.com/pda">@pda on Twitter</a>,<br />
+where I generally write about this kind of thing.</p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

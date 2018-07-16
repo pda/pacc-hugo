@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2006s on paul.annesley.cc</title>
+    <link>http://paul.annesley.cc/2006/</link>
+    <description>Recent content in 2006s on paul.annesley.cc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 22 Dec 2006 10:13:36 +1100</lastBuildDate>
+    
+	<atom:link href="http://paul.annesley.cc/2006/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Static content twice the speed with lighttpd</title>
+      <link>http://paul.annesley.cc/2006/12/static-content-twice-the-speed-with-lighttpd/</link>
+      <pubDate>Fri, 22 Dec 2006 10:13:36 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2006/12/static-content-twice-the-speed-with-lighttpd/</guid>
+      <description>I have done a basic benchmark between Apache 2.2 and lighttpd 1.4 for serving the static files on this WordPress installation, using the Apache &amp;ldquo;ab&amp;rdquo; benchmarking tool.
+Apache is running prefork MPM, mod_ssl and mod_php5. LightTPD is running with minimal modules loaded for serving static content. Both are running on the same machine, on a Linux 2.6.17 kernel.
+Here is the diff of the outputs from each ab benchmark, requesting a static CSS file 10,000 times without HTTP keepalive:</description>
+    </item>
+    
+    <item>
+      <title>Browser Cookie Limits</title>
+      <link>http://paul.annesley.cc/2006/12/browser-cookie-limits/</link>
+      <pubDate>Thu, 07 Dec 2006 01:36:11 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2006/12/browser-cookie-limits/</guid>
+      <description>I&amp;rsquo;ve been working on a website where some users have reported their &amp;ldquo;Remember Me&amp;rdquo; session is often being lost by Internet Explorer. The cause appears to be Internet Explorer rejecting cookies beyond a total of 20 for the domain.
+Interestingly, Internet Explorer seems to be the only browser to correctly enforce the 20 cookies per domain limit specified by RFC 2965
+Here are the limits enforced by the handful of browsers I have tested:</description>
+    </item>
+    
+    <item>
+      <title>Project Idea: XML-RPC desktop client/debugger</title>
+      <link>http://paul.annesley.cc/2006/08/project-idea-xml-rpc-desktop-clientdebugger/</link>
+      <pubDate>Fri, 04 Aug 2006 01:33:42 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2006/08/project-idea-xml-rpc-desktop-clientdebugger/</guid>
+      <description>While working with XML-RPC in PHP, I&#39;ve been frustrated that the only desktop debugging client I could find was the XML-RPC Client for Mac, which doesn&#39;t do me much good in Windows.
+I&#39;m going to try and find time to have a go at building such a tool for Windows, either as a Java application or a XUL Firefox Extension - neither of which I have ever written a useful application with.</description>
+    </item>
+    
+    <item>
+      <title>for no compelling reason...</title>
+      <link>http://paul.annesley.cc/2006/07/for-no-compelling-reason/</link>
+      <pubDate>Fri, 21 Jul 2006 04:56:52 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2006/07/for-no-compelling-reason/</guid>
+      <description>From Netscape&amp;rsquo;s Preliminary Specification for HTTP cookies:
+ The state object is called a cookie, for no compelling reason.
+ </description>
+    </item>
+    
+  </channel>
+</rss>

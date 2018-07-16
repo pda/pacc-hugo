@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2010s on paul.annesley.cc</title>
+    <link>http://paul.annesley.cc/2010/</link>
+    <description>Recent content in 2010s on paul.annesley.cc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 12 May 2010 22:29:00 +1100</lastBuildDate>
+    
+	<atom:link href="http://paul.annesley.cc/2010/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>An intro to modern OpenGL</title>
+      <link>http://paul.annesley.cc/2010/05/opengl-es-20-tutorial/</link>
+      <pubDate>Wed, 12 May 2010 22:29:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2010/05/opengl-es-20-tutorial/</guid>
+      <description>An excellent OpenGL tutorial; beware other documentation and tutorials which endorse deprecated APIs and practices.
+Modern enough to be applicable to OpenGL ES 2.0 (and therefore WebGL), which requires vertex and fragment shaders to be written in OpenGL Shader Language to take advantage of the programmable rendering pipeline, and which removes much of the procedural (glBegin/glEnd) API.
+Adapting this tutorial to Cocoa Touch for iPhone/iPad OpenGL ES 2.0 development was relatively easy, and beat any iPhone OS specific documentation for ES 2.</description>
+    </item>
+    
+    <item>
+      <title>git-ff for git 1.7&#43;</title>
+      <link>http://paul.annesley.cc/2010/05/git-ff/</link>
+      <pubDate>Wed, 12 May 2010 21:07:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2010/05/git-ff/</guid>
+      <description>Provides git ff to quickly fast-forward your current branch to the tracked remote when possible.
+It&amp;rsquo;s git pull --ff-only for those who do their own fetching, and besides, git ff is quicker :)
+Drop it in your path somewhere; depends on Git 1.7+ for the new &amp;ndash;ff-only parameter.
+ </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>Ubuntu 7.04 Feisty Fawn on Parallels - CD-ROM Detect Error</h1>
+<h2>— Paul Annesley, April 2007</h2>
+<p><strong>UPDATE</strong>: Solaris CDROM emulation does the trick for Desktop Ubuntu.  For Ubuntu Server, read <a href="http://paul.annesley.cc/articles/2007/05/01/ubuntu-704-feisty-server-parallels-cdromkernel-workaround">Ubuntu 7.04 Feisty Server &amp; Parallels - CDROM/Kernel Workaround</a>.</p>
+<p>If you're trying to install Ubuntu 7.04 Feisty Fawn on Parallels Desktop for Mac, and getting an error like "No common CD-Rom drive was detected", this might save you some further googling.</p>
+<p>Apparently an issue introduced in some configurations of linux kernel 2.6.20 causes the Parallels emulated CD-ROM to not be detected.</p>
+<p>A <a href="http://forum.parallels.com/thread10308.html">workaround I found at the Parallels forums</a> suggests changing your virtual machine type from "Linux" to "Solaris" during installation.  This certainly got me past the CD-ROM detection error, and got Ubuntu server fully installed.</p>
+<p>Now... if only it would boot.</p>
+<p>EDIT: No luck with Parallels - I'm giving it a shot in VMware Fusion Beta.  Looks good so far...</p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>CLI History Meme</h1>
+<h2>— Paul Annesley, December 2008</h2>
+<p>I just came across <a href="http://rob.cogit8.org/blog/2008/Apr/11/command-line-history/" title="Command Line History">Rob Hudson's Command Line History</a>, which in turn reminded me of <a href="http://diveintomark.org/archives/2008/04/15/history-meme" title="History meme [dive into mark]">Mark Pilgrim's History meme</a> from back in April.</p>
+
+<p>After waiting a fashionably-late eight months, I'll use this as an excuse to find out if I can still publish to my site since hastily patching it up to Django 1.0 three months ago.  I suspect that says something about my technology vs. writing priorities.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">paul@macbuntupro:~$ uname -a
+Linux macbuntupro 2.6.24-21-server #1 SMP Wed Oct 22 00:18:13 UTC 2008 i686 GNU/Linux
+
+paul@macbuntupro:~$ cat .bash_history | awk &#39;{print $1}&#39; | sort | uniq -c | sort -rn | head
+    371 git
+     32 ruby
+     27 cd
+     15 ls
+     13 mysql
+      8 php
+      6 less
+      5 irb
+      4 vi
+      4 chmod</code></pre></div>
+<p><a href="http://whygitisbetterthanx.com/" title="Why Git is Better than X">Git wins.</a></p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

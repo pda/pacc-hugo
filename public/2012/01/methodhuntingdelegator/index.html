@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>MethodHuntingDelegator</h1>
+<h2>— Paul Annesley, January 2012</h2>
+<p>I was implementing search in a Ruby app where the results objects were instances<br />
+of a mix of model classes. Each one had what could be considered a title and a<br />
+description, but the method names were inconsistent.</p>
+
+<p>Wrapping each result in a <code>SearchResult</code> decorator to normalize the interface<br />
+seemed like a good idea. Ruby provides an abstract <a href="http://www.ruby-doc.org/stdlib-1.9.3/libdoc/delegate/rdoc/Delegator.html">Delegator</a> and a concrete<br />
+<a href="http://www.ruby-doc.org/stdlib-1.9.3/libdoc/delegate/rdoc/SimpleDelegator.html">SimpleDelegator</a> which gets most of the way there.</p>
+
+<p>To normalize the method interface, I wrote an extension of <code>SimpleDelegator</code><br />
+with a <code>#hunt_and_call(*candidates)</code> method, which finds and calls the first<br />
+method of the candidate list which the delegate responds to.</p>
+
+<p>Here&rsquo;s the example calling code:</p>
+
+<script src="//gist.github.com/pda/1581535.js?file=example.rb"></script>
+
+<p>And the MethodHuntingDelegator implementation:</p>
+
+<script src="//gist.github.com/pda/1581535.js?file=method_hunting_delegator.rb"></script>
+
+<p>And of course:</p>
+
+<script src="//gist.github.com/pda/1581535.js?file=method_hunting_delegator_spec.rb"></script>
+
+<p>Completely insane? Useful enough for a gem? Better way of going about it? Give<br />
+me hell in <a href="https://gist.github.com/1581535">the gist comments</a>.</p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012s on paul.annesley.cc</title>
+    <link>http://paul.annesley.cc/2012/</link>
+    <description>Recent content in 2012s on paul.annesley.cc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 28 Sep 2012 01:22:00 +1100</lastBuildDate>
+    
+	<atom:link href="http://paul.annesley.cc/2012/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mac OS X: launchd is cool</title>
+      <link>http://paul.annesley.cc/2012/09/mac-os-x-launchd-is-cool/</link>
+      <pubDate>Fri, 28 Sep 2012 01:22:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2012/09/mac-os-x-launchd-is-cool/</guid>
+      <description>One of the core components of Mac OS X is launchd, and it turns out it can do some cool things.
+I particularly like the idea of using QueueDirectories to monitor and act upon files dropped into a directory, without having to run any extra daemons. The files could be uploaded to S3, transcoded to a different video format, gzipped… anything.
+Anyway, I recently fell into the launchd documentation, and came out with this write-up.</description>
+    </item>
+    
+    <item>
+      <title>Simple Dependency Injection and MiniTest::Mock</title>
+      <link>http://paul.annesley.cc/2012/03/simple-dependency-injection-and-minitest-mock/</link>
+      <pubDate>Wed, 28 Mar 2012 19:53:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2012/03/simple-dependency-injection-and-minitest-mock/</guid>
+      <description>I recently wrote a Ruby client for Amazon Alexa&amp;rsquo;s APIs, and thought I&amp;rsquo;d
+pull out an example of nice, simple dependency injection to facilitate unit
+testing. Nothing revolutionary or complicated, just good practice.
+The example is based around a UriSigner class, normally used by the calling
+code like this:
+UriSigner.new(*credentials).sign_uri(uri) The calling code doesn&amp;rsquo;t know or care that UriSigner depends on Base64,
+OpenSSL::Digest::SHA256 and OpenSSL::HMAC. The unit test for
+UriSigner, however, cares for two reasons.</description>
+    </item>
+    
+    <item>
+      <title>Fast RSpec/Rails: tiered spec_helper.rb</title>
+      <link>http://paul.annesley.cc/2012/03/fast-rspec-slash-rails-tiered-spec-helper-dot-rb/</link>
+      <pubDate>Wed, 14 Mar 2012 20:41:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2012/03/fast-rspec-slash-rails-tiered-spec-helper-dot-rb/</guid>
+      <description>Slow Rails startup time is the TDD killer.
+paul@paulbookpro ~/project ⸩ time rspec spec/lib/method_hunting_delegator_spec.rb .. Finished in 0.00078 seconds 2 examples, 0 failures rspec spec/lib/method_hunting_delegator_spec.rb -f d 6.76s user 1.64s system 91% cpu 9.225 total  Holy crap, that&amp;rsquo;s 9 seconds of Rails startup, for 0.00078 seconds worth of
+RSpec. And this class/test doesn&amp;rsquo;t even use Rails! We can do better.
+The culprit? That require &amp;quot;spec_helper&amp;quot; at the top of every spec file which</description>
+    </item>
+    
+    <item>
+      <title>MethodHuntingDelegator</title>
+      <link>http://paul.annesley.cc/2012/01/methodhuntingdelegator/</link>
+      <pubDate>Mon, 09 Jan 2012 17:51:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2012/01/methodhuntingdelegator/</guid>
+      <description>I was implementing search in a Ruby app where the results objects were instances
+of a mix of model classes. Each one had what could be considered a title and a
+description, but the method names were inconsistent.
+Wrapping each result in a SearchResult decorator to normalize the interface
+seemed like a good idea. Ruby provides an abstract Delegator and a concrete
+SimpleDelegator which gets most of the way there.</description>
+    </item>
+    
+  </channel>
+</rss>

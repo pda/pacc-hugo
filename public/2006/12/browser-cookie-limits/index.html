@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>Browser Cookie Limits</h1>
+<h2>— Paul Annesley, December 2006</h2>
+<p>I&rsquo;ve been working on a website where some users have reported their &ldquo;Remember Me&rdquo; session is often being lost by Internet Explorer.  The cause appears to be Internet Explorer rejecting cookies beyond a total of 20 for the domain.</p>
+
+<p>Interestingly, Internet Explorer seems to be the only browser to correctly enforce the <strike>20 cookies per domain limit specified by <a title="RFC 2965: HTTP State Management Mechanism" href="http://tools.ietf.org/html/rfc2965">RFC 2965</a></strike><br />
+Here are the limits enforced by the handful of browsers I have tested:</p>
+
+<ul>
+<li>Firefox 1.5: <strong>50</strong><br /></li>
+<li>Firefox 2.0: <strong>50</strong><br /></li>
+<li>Opera 9: <strong>30</strong><br /></li>
+<li>Internet Explorer 6: <strong>20</strong><br /></li>
+<li>Internet Explorer 7: <strong>20</strong><br />
+<br /></li>
+</ul>
+
+<p>Any new cookies beyond these limits are rejected by the browsers.</p>
+
+<p><em>EDIT 30 March 2007</em>:<br />
+Thanks to Tobias Hinnerup for pointing out that <a title="RFC 2965: HTTP State Management Mechanism" href="http://tools.ietf.org/html/rfc2965">RFC 2965</a> actually specifies that user agents must support &ldquo;at least 20 cookies per unique host or domain name&rdquo;, rather than specifying a limit. This still implies a limit on the number of cookies we can assume a user agent adhering to the RFC will store.<br />
+From the RFC:</p>
+
+<blockquote>
+<p>Because user agents have finite space in which to store cookies, they MAY also discard older cookies to make space for newer ones, using, for example, a least-recently-used algorithm, along with constraints on the maximum number of cookies that each origin server may set.<br />
+— <a href="http://rfc.net/rfc2965.html#s3.3.3">RFC 2965 HTTP State Management Mechanism</a></p>
+</blockquote>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

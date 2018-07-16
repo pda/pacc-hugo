@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2008s on paul.annesley.cc</title>
+    <link>http://paul.annesley.cc/2008/</link>
+    <description>Recent content in 2008s on paul.annesley.cc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 15 Dec 2008 13:35:27 +1100</lastBuildDate>
+    
+	<atom:link href="http://paul.annesley.cc/2008/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CLI History Meme</title>
+      <link>http://paul.annesley.cc/2008/12/cli-history-meme/</link>
+      <pubDate>Mon, 15 Dec 2008 13:35:27 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2008/12/cli-history-meme/</guid>
+      <description>I just came across Rob Hudson&#39;s Command Line History, which in turn reminded me of Mark Pilgrim&#39;s History meme from back in April.
+After waiting a fashionably-late eight months, I&#39;ll use this as an excuse to find out if I can still publish to my site since hastily patching it up to Django 1.0 three months ago. I suspect that says something about my technology vs. writing priorities.
+paul@macbuntupro:~$ uname -a Linux macbuntupro 2.</description>
+    </item>
+    
+    <item>
+      <title>git rebase --interactive</title>
+      <link>http://paul.annesley.cc/2008/07/git-rebase-acid-chainsaw/</link>
+      <pubDate>Thu, 10 Jul 2008 01:53:53 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2008/07/git-rebase-acid-chainsaw/</guid>
+      <description>And then there’s git rebase --interactive, which is a bit like git commit --amend hopped up on acid and holding a chainsaw — completely insane and quite dangerous but capable of exposing entirely new states of mind.
+ — Ryan Tomayko, The Thing About Git</description>
+    </item>
+    
+    <item>
+      <title>Flexihash - Consistent Hashing for PHP</title>
+      <link>http://paul.annesley.cc/2008/04/flexihash-consistent-hashing-php/</link>
+      <pubDate>Wed, 30 Apr 2008 23:43:15 +1000</pubDate>
+      
+      <guid>http://paul.annesley.cc/2008/04/flexihash-consistent-hashing-php/</guid>
+      <description>After reading Tom Kleinpeter&amp;#039;s article on consistent hashing last month, I was inspired to write Flexihash, an open source consistent hashing implementation for PHP, as I couldn&amp;#039;t see anything decent around that fit the bill.
+But first, a little bit of background and a use case example. C&amp;#039;mon, humor me&amp;hellip;
+Balancing Act There&amp;#039;s a few reasons why a large website would want to spread their images (and other resources) out across several URLs.</description>
+    </item>
+    
+    <item>
+      <title>Schneier on Security: The Value of Privacy</title>
+      <link>http://paul.annesley.cc/2008/01/schneier-value-of-privacy/</link>
+      <pubDate>Thu, 03 Jan 2008 01:52:05 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2008/01/schneier-value-of-privacy/</guid>
+      <description>My problem with quips like these – as right as they are – is that they accept the premise that privacy is about hiding a wrong. It’s not. Privacy is an inherent human right, and a requirement for maintaining the human condition with dignity and respect.
+ — Schneier on Security: The Value of Privacy</description>
+    </item>
+    
+  </channel>
+</rss>

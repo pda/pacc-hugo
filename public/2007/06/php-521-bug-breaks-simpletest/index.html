@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>PHP 5.2.1 bug breaks SimpleTest</h1>
+<h2>— Paul Annesley, June 2007</h2>
+<p>The <a href="http://simpletest.sourceforge.net/">SimpleTest</a> unit testing and mock object framework for PHP by Marcus Baker at <a href="http://www.lastcraft.com/simple_test.php">The Last Craft</a> is broken in PHP 5.2.1 due to <a href="http://bugs.php.net/bug.php?id=40768">PHP bug 40768</a>.</p>
+
+<p>The bug causes an infinite loop when &lsquo;break&rsquo; is called in a foreach loop within another foreach loop, when both are looping over variables that internally reference the same array.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#75715e">&lt;?php</span>
+$counter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+$a <span style="color:#f92672">=</span> $b <span style="color:#f92672">=</span> <span style="color:#66d9ef">array</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>); 
+<span style="color:#66d9ef">foreach</span> ($a <span style="color:#66d9ef">as</span> $outer)
+{
+        <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">$outer</span><span style="color:#e6db74">, &#34;</span>;
+        <span style="color:#66d9ef">if</span> ($counter<span style="color:#f92672">++</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>) <span style="color:#66d9ef">die</span>(<span style="color:#e6db74">&#34;... infinite loop!\
+</span><span style="color:#e6db74">&#34;</span>);
+        <span style="color:#66d9ef">foreach</span> ($b <span style="color:#66d9ef">as</span> $inner) <span style="color:#66d9ef">break</span>;
+}
+<span style="color:#75715e">// expected output: 1, 2, 3,
+</span><span style="color:#75715e">// actual output: 1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3 ... infinite loop!
+</span><span style="color:#75715e"></span></code></pre></div>
+<p>In SimpleTest (including the latest 1.0.1 beta), SimpleReflection::_onlyParents() in reflection_php5.php uses a break within a nested foreach like the one above.  The bug seems to cause all tests using mock objects to hang and cause heavy CPU load.</p>
+
+<p>The bug has been fixed in PHP 5.2.2, but if you need to stick with PHP 5.2.1 (the current Ubuntu php5 version) here&rsquo;s a quick patch to SimpleTest 1.0.1 beta (also 1.0.1 alpha3) which should do the job.</p></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#f92672">--- simpletest-101b-orig/reflection_php5.php    2007-05-31 21:17:10.000000000 +1000
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ simpletest-101b/reflection_php5.php 2007-05-31 21:16:03.000000000 +1000
+</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -171,6 +171,7 @@
+</span><span style="color:#75715e"></span>         function _onlyParents($interfaces) {
+             $parents = array();
+<span style="color:#a6e22e">+                       $interfacesCopy = array();
+</span><span style="color:#a6e22e">+                       foreach ($interfaces as $k=&gt;$v) $interfacesCopy[$k] = $v;
+</span><span style="color:#a6e22e"></span>             foreach ($interfaces as $interface) {
+<span style="color:#f92672">-                foreach($interfaces as $possible_parent) {
+</span><span style="color:#f92672"></span><span style="color:#a6e22e">+                foreach($interfacesCopy as $possible_parent) {
+</span><span style="color:#a6e22e"></span>                     if ($interface-&gt;getName() == $possible_parent-&gt;getName()) {
+                         continue;
+</code></pre></div>
+<p>Can anybody suggest a simple, clean way to force PHP to copy an array, without iterating over it like this? Keep in mind that although arrays are not normally passed by reference, an array copy is handled internally by reference until one of the copies is modified, and it would seem that changes to the array pointer do not count as a modification.</p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

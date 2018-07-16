@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2009s on paul.annesley.cc</title>
+    <link>http://paul.annesley.cc/2009/</link>
+    <description>Recent content in 2009s on paul.annesley.cc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 27 Oct 2009 11:57:00 +1100</lastBuildDate>
+    
+	<atom:link href="http://paul.annesley.cc/2009/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Conflict free DNS and routes with multiple DHCP interfaces</title>
+      <link>http://paul.annesley.cc/2009/10/conflict-free-dns-routes-multiple-dhcp-interfaces/</link>
+      <pubDate>Tue, 27 Oct 2009 11:57:00 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2009/10/conflict-free-dns-routes-multiple-dhcp-interfaces/</guid>
+      <description>The Problem Running DHCP on two or more network interfaces inevitably leads to conflicting or unpredictable DNS and default route settings.
+For development at home and work, I use an Ubuntu virtual machine running on Mac OS. To ensure I have a predictable IP address regardless of what network I&#39;m on, the VM primary network interface is NATed, so it gets an IP address from VMware&#39;s DHCP server. To let my co-workers access HTTP on my virtual machine, I have a second network interface which is bridged</description>
+    </item>
+    
+    <item>
+      <title>A quote from Guido van Rossum</title>
+      <link>http://paul.annesley.cc/2009/02/guido-van-rossum-owned/</link>
+      <pubDate>Mon, 23 Feb 2009 22:11:04 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2009/02/guido-van-rossum-owned/</guid>
+      <description>Although I had hoped to provide something similar in Python, it quickly became clear that such an approach would be impossible because there was no way to elegantly distinguish instance variables from local variables in a language without variable declarations.
+ &amp;#8212; Guido van Rossum, The History of Python: Adding Support for User-defined Classes
+# The Greeter class class Greeter def initialize(name) @name = name.capitalize end def salute puts &amp;#34;Hello #{@name}!</description>
+    </item>
+    
+    <item>
+      <title>A quote from _why</title>
+      <link>http://paul.annesley.cc/2009/01/why-x86/</link>
+      <pubDate>Fri, 23 Jan 2009 15:00:37 +1100</pubDate>
+      
+      <guid>http://paul.annesley.cc/2009/01/why-x86/</guid>
+      <description>On a related note, I would like to say something to all of the parties working on languages atop abstracted runtimes, such as the JVM and .Net and Parrot.
+The first thing is: you should try targetting x86. It&#39;s very popular!
+ &amp;#8212; why the lucky stiff, potion INTERNALS</description>
+    </item>
+    
+  </channel>
+</rss>

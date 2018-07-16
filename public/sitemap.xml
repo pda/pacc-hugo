@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://paul.annesley.cc/2012/09/mac-os-x-launchd-is-cool/</loc>
+    <lastmod>2012-09-28T01:22:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2012/03/simple-dependency-injection-and-minitest-mock/</loc>
+    <lastmod>2012-03-28T19:53:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2012/03/fast-rspec-slash-rails-tiered-spec-helper-dot-rb/</loc>
+    <lastmod>2012-03-14T20:41:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2012/01/methodhuntingdelegator/</loc>
+    <lastmod>2012-01-09T17:51:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2010/05/opengl-es-20-tutorial/</loc>
+    <lastmod>2010-05-12T22:29:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2010/05/git-ff/</loc>
+    <lastmod>2010-05-12T21:07:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2009/10/conflict-free-dns-routes-multiple-dhcp-interfaces/</loc>
+    <lastmod>2009-10-27T11:57:00+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2009/02/guido-van-rossum-owned/</loc>
+    <lastmod>2009-02-23T22:11:04+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2009/01/why-x86/</loc>
+    <lastmod>2009-01-23T15:00:37+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2008/12/cli-history-meme/</loc>
+    <lastmod>2008-12-15T13:35:27+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2008/07/git-rebase-acid-chainsaw/</loc>
+    <lastmod>2008-07-10T01:53:53+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2008/04/flexihash-consistent-hashing-php/</loc>
+    <lastmod>2008-04-30T23:43:15+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2008/01/schneier-value-of-privacy/</loc>
+    <lastmod>2008-01-03T01:52:05+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/11/django-and-python-imaging-library-pil-on-leopard/</loc>
+    <lastmod>2007-11-19T13:05:46+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/08/great-webate-tables-have-no-place-in-web-page-layout/</loc>
+    <lastmod>2007-08-25T05:35:15+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/08/great-webate-ajax-not-the-future-of-the-web/</loc>
+    <lastmod>2007-08-03T14:40:19+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/07/xdebug-200-released/</loc>
+    <lastmod>2007-07-25T14:55:19+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/06/php-521-bug-breaks-simpletest/</loc>
+    <lastmod>2007-06-01T12:28:10+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/05/ubuntu-704-feisty-server-parallels-cdromkernel-workaround/</loc>
+    <lastmod>2007-05-01T11:39:05+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/04/ubuntu-704-feisty-fawn-on-parallels-cd-rom-detect-error/</loc>
+    <lastmod>2007-04-21T06:45:56+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/03/lua-climbs-in-tiobe-software-index/</loc>
+    <lastmod>2007-03-07T02:02:36+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2006/12/static-content-twice-the-speed-with-lighttpd/</loc>
+    <lastmod>2006-12-22T10:13:36+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2006/12/browser-cookie-limits/</loc>
+    <lastmod>2006-12-07T01:36:11+11:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2006/08/project-idea-xml-rpc-desktop-clientdebugger/</loc>
+    <lastmod>2006-08-04T01:33:42+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2006/07/for-no-compelling-reason/</loc>
+    <lastmod>2006-07-21T04:56:52+10:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2006/</loc>
+    <lastmod>2006-12-22T10:13:36+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2007/</loc>
+    <lastmod>2007-11-19T13:05:46+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2008/</loc>
+    <lastmod>2008-12-15T13:35:27+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2009/</loc>
+    <lastmod>2009-10-27T11:57:00+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2010/</loc>
+    <lastmod>2010-05-12T22:29:00+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/2012/</loc>
+    <lastmod>2012-09-28T01:22:00+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://paul.annesley.cc/</loc>
+    <lastmod>2012-09-28T01:22:00+11:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

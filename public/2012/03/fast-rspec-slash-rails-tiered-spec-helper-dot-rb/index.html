@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>Fast RSpec/Rails: tiered spec_helper.rb</h1>
+<h2>— Paul Annesley, March 2012</h2>
+<p>Slow Rails startup time is the TDD killer.</p>
+
+<pre><code>paul@paulbookpro ~/project ⸩ time rspec spec/lib/method_hunting_delegator_spec.rb
+..
+Finished in 0.00078 seconds
+2 examples, 0 failures
+rspec spec/lib/method_hunting_delegator_spec.rb -f d  6.76s user 1.64s system 91% cpu 9.225 total
+</code></pre>
+
+<p>Holy crap, that&rsquo;s 9 seconds of Rails startup, for 0.00078 seconds worth of<br />
+RSpec. And <a href="http://paul.annesley.cc/2012/01/methodhuntingdelegator/">this class/test</a> doesn&rsquo;t even use Rails! We can do better.</p>
+
+<p>The culprit? That <code>require &quot;spec_helper&quot;</code> at the top of every spec file which<br />
+loads the entire of Rails:</p>
+
+<pre><code># This file is copied to spec/ when you run 'rails generate rspec:install'
+ENV[&quot;RAILS_ENV&quot;] ||= 'test'
+require File.expand_path(&quot;../../config/environment&quot;, __FILE__)
+require 'rspec/rails'
+require 'rspec/autorun'
+# etc ...
+</code></pre>
+
+<p>There&rsquo;s a few ways to deal with this, each with their own <a href="https://github.com/rspec/rspec-rails/issues/371">pitfalls</a>. After<br />
+trying many approaches, I&rsquo;ve settled on a tiered RSpec initializer<br />
+(spec_helper.rb and friends) which I can choose when invoking RSpec.</p>
+
+<p>All the spec files still <code>require &quot;spec_helper&quot;</code>, but it looks more like this:</p>
+
+<script src="//gist.github.com/pda/2034589.js?file=spec_helper.rb"></script>
+
+<p>Which means we can select different initializers using the SPEC environment<br />
+variable. The following <code>spec_helper_unit.rb</code> is perfect for the<br />
+method_hunting_delegator_spec which took 9 seconds earlier, because there&rsquo;s no<br />
+dependencies on Rails.</p>
+
+<script src="//gist.github.com/pda/2034589.js?file=spec_helper_unit.rb"></script>
+
+<p>The result?</p>
+
+<pre><code>paul@paulbookpro ~/project ⸩ time SPEC=unit rspec spec/lib/method_hunting_delegator_spec.rb
+..
+Finished in 0.00079 seconds
+2 examples, 0 failures
+SPEC=unit rspec spec/lib/method_hunting_delegator_spec.rb  0.81s user 0.08s system 99% cpu 0.890 total
+</code></pre>
+
+<p>Under a second (0.890) is much more like it, and we still get class autoloading<br />
+provided by ActiveSupport. I use this mode for just about everything except<br />
+subclasses of Rails components, and those I keep a slim as possible. Moving<br />
+logic into <a href="http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a> classes is something you&rsquo;ll benefit from anyway, and<br />
+these faster tests provide extra incentive. This example was a spec for a<br />
+standalone class living in <code>RAILS_ROOT/lib/</code> but I use it for all sorts of<br />
+classes under <code>app/models/</code>, <code>app/presenters/</code>, <code>app/forms/</code> etc.</p>
+
+<p>But this zero-Rails initializer doesn&rsquo;t help with testing your ORM-subclasses<br />
+(we&rsquo;ll begrudgingly call them &ldquo;models&rdquo;) which depend on ActiveRecord:</p>
+
+<pre><code>paul@paulbookpro ~/project ⸩ SPEC=unit rspec spec/models/book_spec.rb
+/Users/paul/project/app/models/book.rb:4:in `&lt;top (required)&gt;': uninitialized constant ActiveRecord (NameError)
+</code></pre>
+
+<p>And having tasted sub-second tests, 12 seconds is clearly unacceptable:</p>
+
+<pre><code>paul@paulbookpro ~/project ⸩ time rspec spec/models/book_spec.rb
+.................
+Finished in 0.67016 seconds
+17 examples, 0 failures
+rspec spec/models/book_spec.rb  8.08s user 1.85s system 78% cpu 12.698 total
+</code></pre>
+
+<p>But if you write your classes carefully, they don&rsquo;t need to depend on much<br />
+from Rails except ActiveRecord. So let&rsquo;s write a spec_helper which loads &amp;<br />
+configures ActiveRecord, plus a few other bits and pieces useful for testing<br />
+database-persisted models.</p>
+
+<script src="//gist.github.com/pda/2034589.js?file=spec_helper_model.rb"></script>
+
+<p><em>You&rsquo;ll have to excuse the Devise hackery; it was the one component tightly<br />
+coupled into a model (<code>User</code>), and like most Rails app, that particular model<br />
+is at the center of the whole relationship graph. Perhaps there&rsquo;s a better<br />
+solution, but this got me fast model tests for all but the user_spec itself.</em></p>
+
+<p>Lets run that model spec again, this time boosted by <code>SPEC=model</code>:</p>
+
+<pre><code>paul@paulbookpro ~/project ⸩ time SPEC=model rspec spec/models/book_spec.rb
+.................
+Finished in 0.58512 seconds
+17 examples, 0 failures
+SPEC=model rspec spec/models/book_spec.rb  6.50s user 0.21s system 98% cpu 6.844 total
+</code></pre>
+
+<p>Note that your model classes can still depend on external gems, but they&rsquo;ll<br />
+need to e.g. <code>require &quot;money&quot;</code> at the top. I suspect this explicit declaration<br />
+of dependency isn&rsquo;t a bad idea anyway.</p>
+
+<p>Of course, there&rsquo;s always going to be specs which depend on the whole stack,<br />
+such as acceptance tests.  For those, here&rsquo;s the default spec_helper_full.rb;<br />
+basically like the original spec_helper.rb:</p>
+
+<script src="//gist.github.com/pda/2034589.js?file=spec_helper_full.rb"></script>
+
+<p>God speed.</p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>

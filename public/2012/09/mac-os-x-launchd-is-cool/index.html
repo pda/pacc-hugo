@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>Mac OS X: launchd is cool</h1>
+<h2>— Paul Annesley, September 2012</h2>
+
+
+<p>One of the core components of Mac OS X is <a href="http://en.wikipedia.org/wiki/Launchd">launchd</a>, and it turns out it can do some cool things.</p>
+
+<p>I particularly like the idea of using <code>QueueDirectories</code> to monitor and act upon files dropped into a directory, without having to run any extra daemons. The files could be uploaded to S3, transcoded to a different video format, gzipped… anything.</p>
+
+<p>Anyway, I recently fell into the <code>launchd</code> documentation, and came out with this write-up. <a href="https://twitter.com/pda">Let me know</a> if you find it useful.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The first thing that the Mac OS kernel runs on boot is <code>launchd</code>, which bootstraps the rest of the system by loading and managing various daemons, agents, scripts and other processes. The <a href="https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man8/launchd.8.html">launchd man page</a> clarifies the difference between a daemon and an agent:</p>
+
+<blockquote>
+<p>In the launchd lexicon, a &ldquo;daemon&rdquo; is, by definition, a system-wide service<br />
+of which there is one instance for all clients. An &ldquo;agent&rdquo; is a service that<br />
+runs on a per-user basis. Daemons should not attempt to display UI or<br />
+interact directly with a user&rsquo;s login session. Any and all work that involves<br />
+interacting with a user should be done through agents.</p>
+</blockquote>
+
+<p>Daemons and agents are declared and configured by creating <code>.plist</code> files in various locations of the system:</p>
+
+<pre><code>~/Library/LaunchAgents         Per-user agents provided by the user.
+/Library/LaunchAgents          Per-user agents provided by the administrator.
+/Library/LaunchDaemons         System-wide daemons provided by the administrator.
+/System/Library/LaunchAgents   Per-user agents provided by OS X.
+/System/Library/LaunchDaemons  System-wide daemons provided by OS X.
+</code></pre>
+
+<p>Perhaps best of all, <code>launchd</code> is open source under the <a href="http://en.wikipedia.org/wiki/Apache_License">Apache License 2.0</a>. You can currently find the <a href="http://www.opensource.apple.com/release/mac-os-x-1081/">latest source code on the Apple Open Source site</a>.</p>
+
+<h2 id="launchd-as-cron">launchd as cron</h2>
+
+<p>The <a href="https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man1/crontab.1.html">Mac OS crontab</a> man page says:</p>
+
+<pre><code>Although cron(8) and crontab(5) are officially supported under Darwin,
+their functionality has been absorbed into launchd(8), which provides a
+more flexible way of automatically executing commands.
+</code></pre>
+
+<p>Turns out <code>launchd</code> has a simple <code>StartInterval &lt;integer&gt;</code> property, which starts the job every N seconds. However the true cron-like power lies in <code>StartCalendarInterval</code>:</p>
+
+<pre><code>StartCalendarInterval &lt;dictionary of integers or array of dictionary of integers&gt;
+
+This optional key causes the job to be started every calendar interval as
+specified. Missing arguments are considered to be wildcard. The semantics
+are much like crontab(5).  Unlike cron which skips job invocations when the
+computer is asleep, launchd will start the job the next time the computer
+wakes up.  If multiple intervals transpire before the computer is woken,
+those events will be coalesced into one event upon wake from sleep.
+
+     Minute &lt;integer&gt;
+     The minute on which this job will be run.
+
+     Hour &lt;integer&gt;
+     The hour on which this job will be run.
+
+     Day &lt;integer&gt;
+     The day on which this job will be run.
+
+     Weekday &lt;integer&gt;
+     The weekday on which this job will be run (0 and 7 are Sunday).
+
+     Month &lt;integer&gt;
+     The month on which this job will be run.
+</code></pre>
+
+<p>Lets find the shortest example of this in action:</p>
+
+<pre><code>pda@paulbook ~ &gt; grep -rl StartCalendarInterval \
+                   /Library/Launch* /System/Library/Launch* | \
+                   xargs wc -l | sort -n | head -n1 | awk '{print $2}' | xargs cat
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+        &lt;key&gt;Label&lt;/key&gt;
+        &lt;string&gt;com.apple.gkreport&lt;/string&gt;
+        &lt;key&gt;ProgramArguments&lt;/key&gt;
+        &lt;array&gt;
+                &lt;string&gt;/usr/libexec/gkreport&lt;/string&gt;
+        &lt;/array&gt;
+        &lt;key&gt;StartCalendarInterval&lt;/key&gt;
+        &lt;dict&gt;
+                &lt;key&gt;Minute&lt;/key&gt;&lt;integer&gt;52&lt;/integer&gt;
+                &lt;key&gt;Hour&lt;/key&gt;&lt;integer&gt;3&lt;/integer&gt;
+                &lt;key&gt;WeekDay&lt;/key&gt;&lt;integer&gt;5&lt;/integer&gt;
+        &lt;/dict&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre>
+
+<p>Better than cron? Apart from better handling of skipped jobs after system wake, it also supports per-job environment variables, which can save writing wrapper scripts around your cron jobs:</p>
+
+<pre><code>EnvironmentVariables &lt;dictionary of strings&gt;
+
+This optional key is used to specify additional environmental variables to
+be set before running the job.
+</code></pre>
+
+<p>So, anything XML is obviously worse than <code>0 52 3 * 5 /path/to/command</code>, but <code>launchd</code> is packing more features than cron, so it can pull it off.</p>
+
+<h2 id="launchd-as-a-filesystem-watcher">launchd as a filesystem watcher</h2>
+
+<p>Apart from having an awesome daemon/agent manager, Mac OS X also has an excellent Mail Transport Agent called <a href="http://en.wikipedia.org/wiki/Postfix_(software)">postfix</a>. There&rsquo;s a good chance your ISP runs the same software to handle millions of emails every day. We&rsquo;ll be using it as an example of how <code>launchd</code> can start jobs based on filesystem changes.</p>
+
+<p>Because your laptop isn&rsquo;t, and shouldn&rsquo;t be, a mail server, you don&rsquo;t want postfix running all the time. But when messages are injected into it, e.g. by a script shelling out to <code>/usr/sbin/sendmail</code> or <code>/usr/bin/mail</code>, you want them to be delivered straight away.</p>
+
+<p>Here&rsquo;s how Mac OS X does it (<code>/System/Library/LaunchDaemons/org.postfix.master.plist</code>):</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple Computer//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;org.postfix.master&lt;/string&gt;
+    &lt;key&gt;Program&lt;/key&gt;
+    &lt;string&gt;/usr/libexec/postfix/master&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;master&lt;/string&gt;
+        &lt;string&gt;-e&lt;/string&gt;
+        &lt;string&gt;60&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;QueueDirectories&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/var/spool/postfix/maildrop&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;AbandonProcessGroup&lt;/key&gt;
+    &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre>
+
+<p>We&rsquo;ll start with the simple part. <code>ProgramArguments</code> passes <code>-e 60</code> to postfix, <a href="http://www.postfix.org/master.8.html">described thusly</a>:</p>
+
+<pre><code>-e exit_time
+              Terminate the master process after exit_time seconds.
+              Child processes terminate at their convenience.
+</code></pre>
+
+<p>So postfix is told to exit after running for 60 seconds. The mystery (to me, earlier today, at least) is how it gets started. It could be on a cron-like schedule, but (a) it isn&rsquo;t, (b) that would suck, and &copy; it would result in delayed mail delivery. It turns out the magic lies in <code>QueueDirectory</code>, which I initially overlooked thinking it was a postfix option. The <a href="https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man5/launchd.plist.5.html">launchd.plist</a> man page says:</p>
+
+<pre><code>WatchPaths &lt;array of strings&gt;
+This optional key causes the job to be started if any one of the listed
+paths are modified.
+
+QueueDirectories &lt;array of strings&gt;
+Much like the WatchPaths option, this key will watch the paths for
+modifications. The difference being that the job will only be started if
+the path is a directory and the directory is not empty.
+</code></pre>
+
+<p>The <a href="http://en.wikipedia.org/wiki/Launchd">Launchd Wikipedia page</a> actually goes into more detail:</p>
+
+<pre><code>QueueDirectories
+Watch a directory for new files. The directory must be empty to begin with,
+and must be returned to an empty state before QueueDirectories will launch
+its task again.
+</code></pre>
+
+<p>So <code>launchd</code> can monitor a directory for new files, and then trigger an agent/daemon to consume them. In this case, the <a href="http://www.postfix.org/sendmail.1.html">postfix sendmail(1) man page</a> tells us that “Postfix sendmail(1) relies on the postdrop(1) command to create a queue file in the maildrop directory”, and the <a href="http://www.postfix.org/postdrop.1.html">man page for postdrop(1)</a> tells us that <code>/var/spool/postfix/maildrop</code> is the maildrop queue. <code>launchd</code> sees new mail there, fires up postfix, and then stops it after 60 seconds. This might cause deferred mail to stay deferred for quite some time, but again; your laptop isn&rsquo;t a mail server.</p>
+
+<h2 id="launchd-as-inetd">launchd as inetd</h2>
+
+<p>Tranditionally the <a href="http://en.wikipedia.org/wiki/Inetd">inetd</a> and later <a href="http://en.wikipedia.org/wiki/Xinetd">xinetd</a> “super-server daemon” were used to listen on various ports (e.g. FTP, telnet, …) and launch daemons on-demand to handle in-bound connection, keeping them out of memory at other times. Sounds like something <code>launchd</code> could do…</p>
+
+<p>Lets create a simple inetd-style server at <code>~/Library/LaunchAgents/my.greeter.plist</code>:</p>
+
+<pre><code>&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;my.greeter&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;/usr/bin/ruby&lt;/string&gt;
+    &lt;string&gt;-e&lt;/string&gt;
+    &lt;string&gt;puts &quot;Hi #{gets.match(/(\w+)\W*\z/)[1]}, happy #{Time.now.strftime(&quot;%A&quot;)}!&quot;&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;inetdCompatibility&lt;/key&gt;&lt;dict&gt;&lt;key&gt;Wait&lt;/key&gt;&lt;false/&gt;&lt;/dict&gt;
+  &lt;key&gt;Sockets&lt;/key&gt;
+  &lt;dict&gt;
+    &lt;key&gt;Listeners&lt;/key&gt;
+    &lt;dict&gt;
+      &lt;key&gt;SockServiceName&lt;/key&gt;&lt;string&gt;13117&lt;/string&gt;
+    &lt;/dict&gt;
+  &lt;/dict&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre>
+
+<p>Load it up and give it a shot:</p>
+
+<pre><code>pda@paulbook ~ &gt; launchctl load ~/Library/LaunchAgents/my.greeter.plist
+pda@paulbook ~ &gt; echo &quot;My name is Paul.&quot; | nc localhost 13117
+Hi Paul, happy Friday!
+</code></pre>
+
+<h2 id="launchd-as-god-13">launchd as <a href="http://godrb.com/">god</a>!</h2>
+
+<p>You can use <code>launchd</code> to ensure a process stays alive forever using <code>&lt;key&gt;KeepAlive&lt;/key&gt;&lt;true/&gt;</code>, or stays alive under the following conditions.</p>
+
+<ul>
+<li><code>SuccessfulExit</code> — the previous run exited successfully (or if false, unsuccessful exit).<br /></li>
+<li><code>NetworkState</code> — network (other than localhost) is up (or if false, down).<br /></li>
+<li><code>PathState</code> — list of file paths exists (or if false, do not exist).<br /></li>
+<li><code>OtherJobEnabled</code> — the other named job is enabled (or if false, disabled).<br />
+<br /></li>
+</ul>
+
+<p>These can be combined with various other properties, for example:</p>
+
+<ul>
+<li><code>WorkingDirectory</code><br /></li>
+<li><code>EnvironmentVariables</code><br /></li>
+<li><code>Umask</code><br /></li>
+<li><code>ThrottleInterval</code><br /></li>
+<li><code>StartOnMount</code><br /></li>
+<li><code>StandardInPath</code><br /></li>
+<li><code>StandardOutPath</code><br /></li>
+<li><code>StandardErrorPath</code><br /></li>
+<li><code>SoftResourceLimits</code> and <code>HardResourceLimits</code><br /></li>
+<li><code>Nice</code><br />
+<br />
+<br /></li>
+</ul>
+
+<h2 id="more">More?</h2>
+
+<p>There&rsquo;s some more <a href="http://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html">information at developer.apple.com</a>, and the <a href="https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man8/launchd.8.html">launchd</a> and <a href="https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man5/launchd.plist.5.html">launchd.plist</a> man pages are worth reading.</p>
+
+<p>Let me know if you find any of this useful… I&rsquo;m <a href="https://twitter.com/pda">@pda</a> on Twitter.</p>
+
+<p>You can leave comments on <a href="http://news.ycombinator.com/item?id=4581125">Hacker News</a> if that&rsquo;s more your thing.</p>
+
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>
