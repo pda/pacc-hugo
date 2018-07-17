@@ -1,7 +1,6 @@
 baseURL = "http://paul.annesley.cc/"
 languageCode = "en-us"
 title = "paul.annesley.cc"
-theme = "antifail"
 pygmentsCodeFences = true
 
 [blackfriday]
