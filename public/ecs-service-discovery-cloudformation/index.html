@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>paul.annesley.cc</title>
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700" rel="stylesheet">
+    <style type="text/css">
+      html { padding: 0 1em; }
+      body {
+        margin: 1em auto;
+        max-width: 40em;
+        font-family: Lora, serif;
+        font-size: 120%;
+      }
+      #body-home { font-size: 180%; }
+      #index-item { margin-bottom: 1em; }
+      blockquote {
+        margin-left: 1em;
+        padding-left: 1em;
+        border-left: 8px solid #ccc;
+      }
+      strong { font-weight: bold; }
+      .highlight pre {
+        padding: 1em;
+        overflow: auto;
+      }
+      #content img {
+        max-width: 40em;
+      }
+    </style>
+  </head>
+  <body id="body-page">
+    <div id="content">
+<h1>MailHog on ECS &#43; Service Discovery &#43; CloudFormation</h1>
+<h2>— Paul Annesley, July 2018</h2>
+
+
+<p>AWS <a href="https://aws.amazon.com/blogs/aws/amazon-ecs-service-discovery/">announced Service Discovery for ECS</a> a few months ago. It builds upon the <a href="https://aws.amazon.com/about-aws/whats-new/2017/12/amazon-route-53-releases-auto-naming-api-name-service-management/">Route 53 Auto Naming API announced</a> a few months before that.</p>
+
+<p>Clear documentation and examples for using it with CloudFormation are currently hard to find.  Here&rsquo;s a small but complete example of an ECS Service on Fargate using Service Discovery for internal and external discovery.</p>
+
+<p>I&rsquo;m using the fake/development mail server <a href="https://github.com/mailhog/MailHog">MailHog</a> as an example. Thanks to David&nbsp;Looi at Culture&nbsp;Amp for his contributions to this.</p>
+
+<p>This stack creates;</p>
+
+<ul>
+<li>A Fargate cluster,<br /></li>
+<li>MailHog ECS service running four containers,<br /></li>
+<li>MongoDB ECS service running one container,<br /></li>
+<li>Service Discovery Private DNS Namespace; <code>mail.acme</code>,<br /></li>
+<li>Service Discovery Service for MailHog; <code>smtp.mail.acme</code>,<br /></li>
+<li>Service Discovery Service for MongoDB; <code>mongo.mail.acme</code>.<br />
+<br /></li>
+</ul>
+
+<p>The MailHog service will use <code>mongo.mail.acme</code> service discovery to locate MongoDB. And our external caller will use <code>smtp.mail.acme</code> to locate (and DNS-load-balance between) the MailHog services.  We&rsquo;ll test it via SMTP and HTTP API from an EC2 instance in the same VPC.</p>
+
+<p>Here&rsquo;s what we&rsquo;re aiming for:</p>
+
+<p><img src="/ecs-service-discovery-cloudformation/architecture-diagram.png" alt="" /></p>
+
+<p>And here&rsquo;s the CloudFormation template:</p>
+
+<p>Pay special attention to the <code>HealthCheckCustomConfig</code> property on <code>AWS::ServiceDiscovery::Service</code> — it&rsquo;s non-obvious, but omitting it leads to mysterious stack timeouts as describe in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=283572">this AWS forum thread</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">Description: MailHog on ECS with Service Discovery
+
+Parameters:
+
+  SourceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+
+  Subnets:
+    Type: List&lt;AWS::EC2::Subnet::Id<span style="color:#e6db74">&gt;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">  VPC:</span>
+    Type: AWS::EC2::VPC::Id
+
+Resources:
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref AWS::StackName
+
+  MailService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      LaunchType: FARGATE
+      DesiredCount: <span style="color:#ae81ff">4</span>
+      ServiceName: mailhog-mail
+      ServiceRegistries:
+        - RegistryArn: !GetAtt MailServiceDiscovery.Arn
+      TaskDefinition: !Ref MailTaskDefinition
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Ref Subnets
+          SecurityGroups:
+            - !GetAtt MailServiceSecurityGroup.GroupId
+
+  MailServiceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: mailhog ECS task
+      SecurityGroupIngress:
+        - {ToPort: <span style="color:#ae81ff">1025</span>, FromPort: <span style="color:#ae81ff">1025</span>, IpProtocol: tcp, SourceSecurityGroupId: !Ref SourceSecurityGroup} <span style="color:#75715e"># HTTP</span>
+        - {ToPort: <span style="color:#ae81ff">8025</span>, FromPort: <span style="color:#ae81ff">8025</span>, IpProtocol: tcp, SourceSecurityGroupId: !Ref SourceSecurityGroup} <span style="color:#75715e"># SMTP</span>
+      VpcId: !Ref VPC
+
+  MailTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities: [<span style="color:#e6db74">&#34;FARGATE&#34;</span>]
+      NetworkMode: awsvpc
+      Cpu: <span style="color:#e6db74">&#34;256&#34;</span>
+      Memory: <span style="color:#e6db74">&#34;0.5GB&#34;</span>
+      Family: !Ref AWS::StackName
+      ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
+      ContainerDefinitions:
+        - Name: mailhog
+          Image: mailhog/mailhog:latest
+          Environment:
+            - {Name: MH_STORAGE, Value: <span style="color:#e6db74">&#34;mongodb&#34;</span>}
+            - {Name: MH_MONGO_URI, Value: <span style="color:#e6db74">&#34;mongo.mail.acme:27017&#34;</span>}
+
+  MongoService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      LaunchType: FARGATE
+      DesiredCount: <span style="color:#ae81ff">1</span>
+      ServiceName: mailhog-mongo
+      ServiceRegistries:
+        - RegistryArn: !GetAtt MongoServiceDiscovery.Arn
+      TaskDefinition: !Ref MongoTaskDefinition
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Ref Subnets
+          SecurityGroups:
+            - !GetAtt MongoServiceSecurityGroup.GroupId
+
+  MongoServiceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: mailhog ECS task
+      SecurityGroupIngress:
+        - {ToPort: <span style="color:#ae81ff">27017</span>, FromPort: <span style="color:#ae81ff">27017</span>, IpProtocol: tcp, SourceSecurityGroupId: !Ref MailServiceSecurityGroup}
+      VpcId: !Ref VPC
+
+  MongoTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities: [<span style="color:#e6db74">&#34;FARGATE&#34;</span>]
+      NetworkMode: awsvpc
+      Cpu: <span style="color:#e6db74">&#34;256&#34;</span>
+      Memory: <span style="color:#e6db74">&#34;0.5GB&#34;</span>
+      Family: !Sub ${AWS::StackName}-mongo
+      ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
+      ContainerDefinitions:
+        - Name: mongo
+          Image: mongo:latest
+
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: <span style="color:#e6db74">2012-10-17</span>
+        Statement:
+          - {Action: <span style="color:#e6db74">&#34;sts:AssumeRole&#34;</span>, Effect: Allow, Principal: {Service: ecs-tasks.amazonaws.com}}
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  ServiceDiscoveryNamespace:
+    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+    Properties:
+      Name: mail.acme
+      Vpc: !Ref VPC
+
+  MailServiceDiscovery:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Name: smtp
+      DnsConfig:
+        DnsRecords: [{Type: A, TTL: <span style="color:#e6db74">&#34;10&#34;</span>}]
+        NamespaceId: !Ref ServiceDiscoveryNamespace
+      HealthCheckCustomConfig:
+        FailureThreshold: <span style="color:#ae81ff">1</span>
+
+  MongoServiceDiscovery:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Name: mongo
+      DnsConfig:
+        DnsRecords: [{Type: A, TTL: <span style="color:#e6db74">&#34;10&#34;</span>}]
+        NamespaceId: !Ref ServiceDiscoveryNamespace
+      HealthCheckCustomConfig:
+        FailureThreshold: <span style="color:#ae81ff">1</span></code></pre></div>
+<p>Fill in the blanks and launch the stack:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">aws cloudformation create-stack <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --stack-name pda-mailhog <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --capabilities CAPABILITY_IAM <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --template-body<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file://cloudformation.yaml&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --parameters <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#34;ParameterKey=SourceSecurityGroup,ParameterValue=____&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#34;ParameterKey=Subnets,ParameterValue=____&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#34;ParameterKey=VPC,ParameterValue=____&#34;</span></code></pre></div>
+<h2 id="demo-from-ec2-in-same-vpc">Demo from EC2 in same VPC</h2>
+
+<p>Check the DNS provided by Service Discovery. There&rsquo;s four ECS Tasks, so four <code>A</code> records.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">[ec2-user@... ~]$ dig a smtp.mail.acme
+...
+;; QUESTION SECTION:
+;smtp.mail.acme.                        IN      A
+
+;; ANSWER SECTION:
+smtp.mail.acme.         10      IN      A       10.0.147.126
+smtp.mail.acme.         10      IN      A       10.0.150.59
+smtp.mail.acme.         10      IN      A       10.0.145.36
+smtp.mail.acme.         10      IN      A       10.0.147.90
+...</code></pre></div>
+<p>Check MailHog&rsquo;s API. The DNS resolver will pick one random-ish-ly:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">[ec2-user@... ~]$ curl -s http://smtp.mail.acme:8025/api/v2/messages | jq .
+{
+  &#34;total&#34;: 0,
+  &#34;count&#34;: 0,
+  &#34;start&#34;: 0,
+  &#34;items&#34;: []
+}</code></pre></div>
+<p>Deliver a message:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">[ec2-user@... ~]$ nc -C smtp.mail.acme 1025
+220 mailhog.example ESMTP MailHog
+HELO pda
+250 Hello pda
+MAIL FROM:&lt;paul@example.com&gt;
+250 Sender paul@example.com ok
+RCPT TO:&lt;melbourne@awsug.org.au&gt;
+250 Recipient melbourne@awsug.org.au ok
+DATA
+354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+From: &#34;Paul Annesley&#34; &lt;paul@example.com&gt;
+To: &lt;melbourne@awsug.org.au&gt;
+Date: Tue, 24 July 2018 23:10:00 +1000
+Subject: Culture Amp is hiring!
+
+Hello world!
+.
+250 Ok: queued as 2tNO5vtw8iium72EOzEP16TzYLg1ybYucF6E9wWOU1k=@mailhog.example
+QUIT
+221 Bye</code></pre></div>
+<p>Check MailHog&rsquo;s API again:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">[ec2-user@... ~]$ curl -s http://smtp.mail.acme:8025/api/v2/messages \
+  | jq &#39;.items[0].Content.Headers.Subject[0]&#39;
+&#34;Culture Amp is hiring!&#34;</code></pre></div>
+<div>
+  <a href="/">← index</a>
+</div>
+
+    </div>
+  </body>
+</html>
